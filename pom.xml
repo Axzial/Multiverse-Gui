@@ -9,7 +9,6 @@
         <dependency>
             <groupId>com.onarandombox.multiversecore</groupId>
             <artifactId>Multiverse-Core</artifactId>
-            <version>2.5</version>
         </dependency>
     </dependencies>
     <properties>

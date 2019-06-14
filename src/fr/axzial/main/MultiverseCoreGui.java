@@ -2,10 +2,10 @@ package fr.axzial.main;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import fr.axzial.main.Commands.Mvg;
-import fr.axzial.main.Listeners.Listeners;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import fr.axzial.main.Commands.Mvg;
+import fr.axzial.main.Listeners.Listeners;
 
 import java.util.*;
 import java.util.regex.Pattern;

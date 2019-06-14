@@ -11,6 +11,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.regex.Pattern;
+
 public class Listeners implements Listener {
 
     @EventHandler
@@ -35,6 +37,7 @@ public class Listeners implements Listener {
 
             //////////////////////////////////////////////////////// OPEN CAT
             if (event.getCurrentItem().getItemMeta().getDisplayName().contains("§b")){
+
                 String catname = event.getCurrentItem().getItemMeta().getDisplayName().replace("§b", ""); // REPLACE COLOR TO GET DEFAULT NAME
 
 
@@ -49,24 +52,50 @@ public class Listeners implements Listener {
                 int inv = 0;
 
                 //////////////////////// WORLDS
-                for (String f : main.loaded){ // GET LOADED WORLDS
-                    if (f.contains(catname)){
-                        ItemStack loaded = green.clone();
-                        ItemMeta loadedmeta = loaded.getItemMeta();
-                        loadedmeta.setDisplayName(f + "§a(Loaded)");
-                        loaded.setItemMeta(loadedmeta);
-                        worlds.setItem(inv, loaded); // SET ITEM
-                        inv++;
+                if (event.getCurrentItem().getType() != Material.SKULL_ITEM){
+                    for (String f : main.loaded){ // GET LOADED WORLDS
+                        String[] Array = f.split(Pattern.quote("."));
+                        if (Array[0].equalsIgnoreCase(catname)){
+                            ItemStack loaded = green.clone();
+                            ItemMeta loadedmeta = loaded.getItemMeta();
+                            loadedmeta.setDisplayName(f + "§a(Loaded)");
+                            loaded.setItemMeta(loadedmeta);
+                            worlds.setItem(inv, loaded); // SET ITEM
+                            inv++;
+                        }
+                    }
+                    for (String f : main.unloaded){ // GET UNLOADED
+                        String[] Array = f.split(Pattern.quote("."));
+                        if (Array[0].equalsIgnoreCase(catname)){
+                            ItemStack unloaded = red.clone();
+                            ItemMeta loadedmeta = unloaded.getItemMeta();
+                            loadedmeta.setDisplayName(f + "§c(Unloaded)");
+                            unloaded.setItemMeta(loadedmeta);
+                            worlds.setItem(inv, unloaded); // SET ITEM
+                            inv++;
+                        }
                     }
                 }
-                for (String f : main.unloaded){ // GET UNLOADED
-                    if (f.contains(catname)){
-                        ItemStack unloaded = red.clone();
-                        ItemMeta loadedmeta = unloaded.getItemMeta();
-                        loadedmeta.setDisplayName(f + "§c(UnLoaded)");
-                        unloaded.setItemMeta(loadedmeta);
-                        worlds.setItem(inv, unloaded); // SET ITEM
-                        inv++;
+                else {
+                    for (String f : main.loaded){ // GET LOADED WORLDS
+                        if (f.contains(catname)){
+                            ItemStack loaded = green.clone();
+                            ItemMeta loadedmeta = loaded.getItemMeta();
+                            loadedmeta.setDisplayName(f + "§a(Loaded)");
+                            loaded.setItemMeta(loadedmeta);
+                            worlds.setItem(inv, loaded); // SET ITEM
+                            inv++;
+                        }
+                    }
+                    for (String f : main.unloaded){ // GET UNLOADED
+                        if (f.contains(catname.toLowerCase())){
+                            ItemStack unloaded = red.clone();
+                            ItemMeta loadedmeta = unloaded.getItemMeta();
+                            loadedmeta.setDisplayName(f + "§c(Unloaded)");
+                            unloaded.setItemMeta(loadedmeta);
+                            worlds.setItem(inv, unloaded); // SET ITEM
+                            inv++;
+                        }
                     }
                 }
 
@@ -86,6 +115,10 @@ public class Listeners implements Listener {
             /////////////////////////////////////////////// CANCEL OTHER EVENTS
             event.setCancelled(true);
             if (event.getCurrentItem() == null){
+                event.setCancelled(true);
+                return;
+            }
+            if (event.getCurrentItem().getType() == Material.STAINED_GLASS_PANE || event.getCurrentItem().getType() == Material.AIR){
                 event.setCancelled(true);
                 return;
             }

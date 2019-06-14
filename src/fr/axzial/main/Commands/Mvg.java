@@ -44,16 +44,19 @@ public class Mvg implements CommandExecutor {
                 glassmeta.setDisplayName(" ");
                 glass.setItemMeta(glassmeta);
                 ItemStack glassclone = glass.clone();
-                for (int x = 9; x > 18; x++){
-                    panel.setItem(x, glassclone); // ADD ITEM
+                for (int xx = 9; xx < 18; xx++){
+                    panel.setItem(xx, glassclone); // ADD ITEM
+                    player.sendMessage("glass");
                 }
 
                 //////////////////////////////// AUTO CATS
                 int inv = 18;
-                ItemStack cat = new ItemStack(Material.BOOK);
-                ItemMeta catmeta = cat.getItemMeta();
-                ArrayList<String> catlore = new ArrayList<>();
+
+
                 for (String s : main.sortedcats.keySet()){
+                    ItemStack cat = new ItemStack(Material.MAP);
+                    ItemMeta catmeta = cat.getItemMeta();
+                    ArrayList<String> catlore = new ArrayList<>();
                     int maps = main.sortedcats.get(s);
                     catmeta.setDisplayName(ChatColor.AQUA + s);
                     catlore.add("§eMaps: " + maps);
