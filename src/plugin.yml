@@ -1,0 +1,7 @@
+name: MultiverseCoreGui
+version: 1.0
+author: Axzial
+main: fr.axzial.main.MultiverseCoreGui
+depend: ['Multiverse-Core']
+commands:
+  mvg:
