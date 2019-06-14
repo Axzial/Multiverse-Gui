@@ -7,14 +7,17 @@ import fr.axzial.main.Listeners.Listeners;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
+import java.util.*;
+import java.util.regex.Pattern;
 
 public class MultiverseCoreGui extends JavaPlugin {
 
     //////////////////////////////////////////// WORLDS LIST
     public ArrayList<String> unloaded = new ArrayList<>();
     public ArrayList<String> loaded = new ArrayList<>();
-    public ArrayList<String> categories = new ArrayList<>();
+    public ArrayList<String> allworlds = new ArrayList<>();
+    public HashMap<String, Integer> catnames = new HashMap<>();
+    public HashMap<String, Integer> sortedcats = new HashMap<>();
 
     //////////////////////////////////////////// MV CORE
     private MultiverseCore core;
@@ -54,18 +57,73 @@ public class MultiverseCoreGui extends JavaPlugin {
     public MultiverseCore getCore() { return this.core; }
 
 
-    //////////////////////////////////////////// TIDY WORLDS IN LIST
+    //////////////////////////////////////////// CLASS HASHMAP
+    public static HashMap<String, Integer> sortByValue(HashMap<String, Integer> catnames)
+    {
+        ///////////////////// NEW LIST OF ELEMENTS IN HASHMAP
+        List<Map.Entry<String, Integer> > list =
+                new LinkedList<Map.Entry<String, Integer> >(catnames.entrySet());
+
+        ////////////////////////////// COMPARE SORT LIST
+        Collections.sort(list, new Comparator<Map.Entry<String, Integer> >() {
+            public int compare(Map.Entry<String, Integer> t1,
+                               Map.Entry<String, Integer> t2)
+            {
+                return (t2.getValue()).compareTo(t1.getValue());
+            }
+        });
+
+        /////////////////////////////// RETURN IN HASHMAP
+        HashMap<String, Integer> temp = new LinkedHashMap<String, Integer>();
+        for (Map.Entry<String, Integer> aa : list) {
+            temp.put(aa.getKey(), aa.getValue());
+        }
+        return temp;
+    }
+
+
+    //////////////////////////////////////////// TIDY WORLDS IN LIST & CLASS CATS BY NUMBER OF MAPS IN IT
     public void tidyworlds(){
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
             public void run(){
+                ////////////////////////////////////////////// CLEAR OLD LISTS
                 unloaded.clear();
                 loaded.clear();
+                allworlds.clear();
+                catnames.clear();
+
+                ////////////////////////////////////////////// TIDY UNLOADED WORLDS
                 for (String unlworlds : getCore().getMVWorldManager().getUnloadedWorlds()){
                     unloaded.add(unlworlds);
+                    allworlds.add(unlworlds);
+                    String[] Array = unlworlds.split(Pattern.quote("."));
+                    if (catnames.containsKey(Array[0])){
+                        int i = catnames.get(Array[0]) + 1;
+                        catnames.remove(Array[0]);
+                        catnames.put(Array[0], i);
+                    }
+                    else {
+                        catnames.put(Array[0], 1);
+                    }
                 }
+
+                ////////////////////////////////////////////// TIDY LOADED WORLDS
                 for (MultiverseWorld worlds : getCore().getMVWorldManager().getMVWorlds()){
                     loaded.add(worlds.getName());
+                    allworlds.add(worlds.getName());
+                    String[] Array = worlds.getName().split(Pattern.quote("."));
+                    if (catnames.containsKey(Array[0])){
+                        int i = catnames.get(Array[0]) + 1;
+                        catnames.remove(Array[0]);
+                        catnames.put(Array[0], i);
+                    }
+                    else {
+                        catnames.put(Array[0], 1);
+                    }
                 }
+
+                ////////////////////////////////////////////////SORT HASHMAP WITH NEW LIST
+                sortedcats = sortByValue(catnames);
             }
         }, 0, 100);
     }
